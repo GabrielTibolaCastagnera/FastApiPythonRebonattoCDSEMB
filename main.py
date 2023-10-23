@@ -1,15 +1,16 @@
 from fastapi import FastAPI
+from database_controller import criarNovaEstufa
+from estufa_model import EstufaModel
+from resposta_criar_nova_estufa import RespostaCriarNovaEstufa
+from fastapi.exceptions import HTTPException
+from exception_model import EqualIdExceptionModel, ExceptionModel
 
 app = FastAPI()
 
-@app.get("/semtipo/")
-async def semtipo(arg1):
-    return {"resultado": "Veio " + arg1}
-
-@app.get("/soma/")
-async def soma(valor1: int, valor2: int):
-    return {"resultado": valor1+valor2}
-
-@app.get("/somadefault/")
-async def somadef(valor1: int = 0, valor2: int = 10):
-    return {"resultado": valor1+valor2} 
+@app.post("/criarNovaEstufa/")
+async def criarNovaEstufaDef(novaEstufa: EstufaModel):
+    try:
+        criarNovaEstufa(novaEstufa=novaEstufa)
+        return RespostaCriarNovaEstufa(codigo='criado', mensagem='Sua estufa ' + novaEstufa.nome + ' criada')
+    except EqualIdExceptionModel:
+        return HTTPException(status_code=400, detail= ExceptionModel(codigo='equalStoveId', menssagem='Id Existente'))
