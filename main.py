@@ -33,8 +33,8 @@ async def update_estufa(atualizarEstufa: AtualizarEstufaModel):
         updateStove(atualizarEstufa)
         return atualizarEstufa
 
-    except:
-        return "Fodeo"
+    except NotFoundExceptionModel:
+        return JSONResponse(status_code=404, content=ExceptionModel(codigo='estufaNaoEncontrada', menssagem='Estufa não encontrada.').to_dict())
 
 
 @app.patch("/excluirEstufa")
