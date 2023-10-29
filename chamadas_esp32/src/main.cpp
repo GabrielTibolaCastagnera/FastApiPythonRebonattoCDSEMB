@@ -1,25 +1,22 @@
 /*
 Engenharia de Computação - UPF
 Comunicação de dados em Aplicações Embarcadas
-Marcelo Trindade Rebonatto
-06/10/2023
-Consumidor Rest com Rotas e métodos
+Gabriel Tibola Castagnera
+29/10/2023
+Trabalho API REST em Python com chamadas na ESP32
 */
 
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
-#define EAP_ANONYMOUS_IDENTITY "anonymous@tuke.sk" // anonymous@example.com, or you can use also nickname@example.com
-#define EAP_IDENTITY "rebonatto"                   // login
-#define DELAY_BETWEEN 5000
+#define DELAY_BETWEEN 2000
+#define DELAY_BETWEEN_CYCLES 10000
 
-const char *ssid = "Vanini";
-const char *passwd = "Capital_das_olarias";
+const char *ssid = "";
+const char *passwd = "";
 
 unsigned long lastTime = 0;
-// Ajusta par requisição a cada 5 segundos (5000)
-unsigned long timerDelay = 2000;
 
 // Your Domain name with URL path or IP address with path
 // Inserção do URI (URL + URN) a acessar
@@ -60,7 +57,7 @@ void setup()
 
 void loop()
 {
-    if ((millis() - lastTime) > timerDelay)
+    if ((millis() - lastTime) > DELAY_BETWEEN_CYCLES)
     {
         if (WiFi.status() == WL_CONNECTED)
         {
@@ -154,13 +151,11 @@ void acessaGET(String URN = "")
             Serial.println(rota.c_str());
         }
         printJson(payload);
-        timerDelay = 2000;
     }
     else
     {
         Serial.print("Erro de acesso ao Serviço: ");
         Serial.println(httpResponseCode);
-        timerDelay = 100;
     }
     // Free resources
     http.end();
@@ -207,7 +202,6 @@ void acessaPatch(String URN)
         Serial.println(httpResponseCode);
         String payload = http.getString();
         printJson(payload);
-        timerDelay = 100;
     }
     // Free resources
     http.end();
@@ -246,13 +240,11 @@ void acessaPUT(String URN, String body = "")
             String payload = http.getString();
             printJson(payload);
         }
-        timerDelay = 2000;
     }
     else
     {
         Serial.print("Erro de acesso ao Serviço: ");
         Serial.println(httpResponseCode);
-        timerDelay = 100;
     }
     // Free resources
     http.end();
@@ -285,7 +277,6 @@ void acessaPOST(String URN, String body = "")
         Serial.println(httpResponseCode);
         String payload = http.getString();
         printJson(payload);
-        timerDelay = 100;
     }
 
     // Free resources
