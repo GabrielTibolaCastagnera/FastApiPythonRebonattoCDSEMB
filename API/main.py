@@ -1,6 +1,6 @@
 # Engenharia de Computação - UPF
 # Comunicação de dados em Aplicações Embarcadas
-# Gabriel Tibola Castagnera
+# Gabriel Tibola Castagnera e Adrian Luithardt Klitzke
 # 29/10/2023
 # Trabalho API REST em Python com chamadas na ESP32
 
