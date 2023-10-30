@@ -1,7 +1,7 @@
 /*
 Engenharia de Computação - UPF
 Comunicação de dados em Aplicações Embarcadas
-Gabriel Tibola Castagnera
+Gabriel Tibola Castagnera e Adrian Luithardt Klitzke
 29/10/2023
 Trabalho API REST em Python com chamadas na ESP32
 */
@@ -20,7 +20,7 @@ unsigned long lastTime = 0;
 
 // Your Domain name with URL path or IP address with path
 // Inserção do URI (URL + URN) a acessar
-String uri = "http://192.168.69.83:8000/";
+String uri = "http://192.168.2.108:8000/";
 
 void acessaGET(String URN);
 void acessaPOST(String URN, String body);
