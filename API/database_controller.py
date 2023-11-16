@@ -5,6 +5,19 @@ from possue_id_igual import possueIdIgual
 from exception_model import EqualIdExceptionModel, NotFoundExceptionModel
 from atualizar_estufa_model import AtualizarEstufaModel
 from indexOf import indexOf
+import mariadb
+import sys
+try:
+   conn = mariadb.connect(
+      user="183929",
+      password="183929",
+      host="10.0.235.199",
+      port=3306,
+      database = "employees"
+   )
+except mariadb.Error as e:
+   print(f"Error conecting to MariaDB Platform: {e}")
+   sys.exit(1)
 db = []
 
 def criarNovaEstufa(novaEstufa: EstufaModel):
