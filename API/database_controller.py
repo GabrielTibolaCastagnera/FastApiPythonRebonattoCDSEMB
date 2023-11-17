@@ -24,6 +24,19 @@ def print_contacts(cur):
 
      # List Contacts
      print("\n".join(contacts))
+db = []
+
+def criarNovaEstufa(novaEstufa: EstufaModel):
+    if(possueIdIgual(db, novaEstufa)):
+        raise EqualIdExceptionModel
+    db.append(novaEstufa)
+    try:
+      cur.execute(f"INSERT INTO `ESTUFAS`(`id`, `nome`, `humidadeDoAr`, `humidadeDoSolo`, `qtdDeMudas`, `luminosidade`) VALUES ({str(novaEstufa.id)}, '{str(novaEstufa.nome)}', {str(novaEstufa.humidadeDoAr)}, {str(novaEstufa.humidadeDoSolo)}, {str(novaEstufa.qtdDeMudas)}, {str(novaEstufa.luminosidade)})")
+      conn.commit()
+    except mariadb.Error as e:
+       print(e)
+       raise EqualIdExceptionModel
+
 try:
    conn = mariadb.connect(
       user="183929",
@@ -33,18 +46,19 @@ try:
       database = "183929"
    )
    cur = conn.cursor()
+   criarNovaEstufa(EstufaModel(id = 5, 
+                               nome='legal',
+                               humidadeDoAr=0.6, 
+                               humidadeDoSolo=0.9, 
+                               luminosidade=2000, 
+                               qtdDeMudas=100))
    #print_contacts(cur)
    # Close Connection
    conn.close()
 except mariadb.Error as e:
    print(f"Error conecting to MariaDB Platform: {e}")
    sys.exit(1)
-db = []
 
-def criarNovaEstufa(novaEstufa: EstufaModel):
-    if(possueIdIgual(db, novaEstufa)):
-        raise EqualIdExceptionModel
-    db.append(novaEstufa)
 
 def get_list(id=None):
 
