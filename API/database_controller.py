@@ -7,14 +7,35 @@ from atualizar_estufa_model import AtualizarEstufaModel
 from indexOf import indexOf
 import mariadb
 import sys
+# Print List of Contacts
+def print_contacts(cur):
+     print("OLA!")
+     """Retrieves the list of contacts from the database and prints to stdout"""
+
+     # Initialize Variables
+     contacts = []
+
+     # Retrieve Contacts
+     cur.execute("SELECT * FROM ESTUFAS")
+
+     # Prepare Contacts
+     for (id, nome, hum, humS, mudas, lum) in cur:
+        print(f"{nome}: {hum}")
+
+     # List Contacts
+     print("\n".join(contacts))
 try:
    conn = mariadb.connect(
       user="183929",
       password="183929",
       host="10.0.235.199",
       port=3306,
-      database = "employees"
+      database = "183929"
    )
+   cur = conn.cursor()
+   #print_contacts(cur)
+   # Close Connection
+   conn.close()
 except mariadb.Error as e:
    print(f"Error conecting to MariaDB Platform: {e}")
    sys.exit(1)
