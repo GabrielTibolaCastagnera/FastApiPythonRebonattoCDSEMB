@@ -7,86 +7,96 @@ from atualizar_estufa_model import AtualizarEstufaModel
 from indexOf import indexOf
 import mariadb
 import sys
-# Print List of Contacts
-def print_contacts(cur):
-     print("OLA!")
-     """Retrieves the list of contacts from the database and prints to stdout"""
 
-     # Initialize Variables
-     contacts = []
-
-     # Retrieve Contacts
-     cur.execute("SELECT * FROM ESTUFAS")
-
-     # Prepare Contacts
-     for (id, nome, hum, humS, mudas, lum) in cur:
-        print(f"{nome}: {hum}")
-
-     # List Contacts
-     print("\n".join(contacts))
-db = []
-
-def criarNovaEstufa(novaEstufa: EstufaModel):
-    if(possueIdIgual(db, novaEstufa)):
-        raise EqualIdExceptionModel
-    db.append(novaEstufa)
-    try:
-      cur.execute(f"INSERT INTO `ESTUFAS`(`id`, `nome`, `humidadeDoAr`, `humidadeDoSolo`, `qtdDeMudas`, `luminosidade`) VALUES ({str(novaEstufa.id)}, '{str(novaEstufa.nome)}', {str(novaEstufa.humidadeDoAr)}, {str(novaEstufa.humidadeDoSolo)}, {str(novaEstufa.qtdDeMudas)}, {str(novaEstufa.luminosidade)})")
-      conn.commit()
-    except mariadb.Error as e:
-       print(e)
-       raise EqualIdExceptionModel
+cur: mariadb.Cursor
 
 try:
-   conn = mariadb.connect(
-      user="183929",
-      password="183929",
-      host="10.0.235.199",
-      port=3306,
-      database = "183929"
-   )
-   cur = conn.cursor()
-   criarNovaEstufa(EstufaModel(id = 5, 
-                               nome='legal',
-                               humidadeDoAr=0.6, 
-                               humidadeDoSolo=0.9, 
-                               luminosidade=2000, 
-                               qtdDeMudas=100))
-   #print_contacts(cur)
-   # Close Connection
-   conn.close()
+    conn = mariadb.connect(
+        user="183929",
+        password="183929",
+        host="177.67.253.69",
+        port=53306,
+        database="183929"
+    )
+    cur = conn.cursor()
 except mariadb.Error as e:
-   print(f"Error conecting to MariaDB Platform: {e}")
-   sys.exit(1)
+    print(f"Error conecting to MariaDB Platform: {e}")
+    sys.exit(1)
 
 
-def get_list(id=None):
-
-  if id is not None:
+def criarNovaEstufa(novaEstufa: EstufaModel):
     try:
-      return [get_data(id)]
-    except KeyError:
-      raise ValueError("ID não encontrado.")
-  else:
-    return [get_data(id) for id in get_all_start_methods()]
+        cur.execute(
+            f"INSERT INTO `ESTUFAS`(`id`, `nome`, `humidadeDoAr`, `humidadeDoSolo`, `qtdDeMudas`, `luminosidade`) VALUES ({str(novaEstufa.id)}, '{str(novaEstufa.nome)}', {str(novaEstufa.humidadeDoAr)}, {str(novaEstufa.humidadeDoSolo)}, {str(novaEstufa.qtdDeMudas)}, {str(novaEstufa.luminosidade)})")
+        conn.commit()
+    except mariadb.Error as e:
+        print(e)
+        raise EqualIdExceptionModel
 
 def updateStove(stove: AtualizarEstufaModel):
-   indexOfStove = indexOf(db, stove.id)
-   if(indexOfStove is None):
-      raise NotFoundExceptionModel
-   db[indexOfStove] = db[indexOfStove].copyWith(stove)
+    try:
+        cur.execute("SELECT id FROM ESTUFAS WHERE id = " + str(stove.id))
+        count = 0
+        for (id) in cur:
+            count += 1
+        if count == 0:
+            raise NotFoundExceptionModel
+        hasUpdate = False
+        update = "UPDATE ESTUFAS SET "
+        if not (stove.humidadeDoAr is None):
+            hasUpdate = True
+            update += "humidadeDoAr = " + str(stove.humidadeDoAr) + ", "
+        if not (stove.humidadeDoSolo is None):
+            hasUpdate = True
+            update += "humidadeDoSolo = " + str(stove.humidadeDoSolo) + ", "
+        if not (stove.luminosidade is None):
+            hasUpdate = True
+            update += "luminosidade = " + str(stove.luminosidade) + ", "
+        if not (stove.nome is None):
+            hasUpdate = True
+            update += "nome = '" + stove.nome + "', "
+        if not (stove.qtdDeMudas is None):
+            hasUpdate = True
+            update += "qtdDeMudas = " + str(stove.qtdDeMudas) + ", "
+        if (hasUpdate):
+            update = update[:-1]
+            update = update[:-1]
+            update += " WHERE id = " + str(stove.id)
+            print(update)
+            cur.execute(update)
+        else:
+            raise NotFoundExceptionModel
+
+    except mariadb.Error as e:
+        print(e)
+        raise NotFoundExceptionModel
+    
+
 
 def search_list(id: None | int):
-  if id is None:
-    return db
-  for stove in db:
-    if(stove.id == id):
-        return [stove]
-  raise NotFoundExceptionModel
+    if id is None:
+        cur.execute("SELECT * FROM ESTUFAS")
+    else:
+        cur.execute("SELECT * FROM ESTUFAS WHERE id = " + str(id))
+    list = []
+    for (id, nome, hum, humS, mudas, lum) in cur:
+        list.append(EstufaModel(humidadeDoAr=hum, humidadeDoSolo=humS,
+                    id=id, luminosidade=lum, nome=nome, qtdDeMudas=mudas))
+    if (len(list) == 0):
+        raise NotFoundExceptionModel
+    return list
+
 
 def delete_estufa(estufa_id: int):
-    estufa_index = indexOf(db, estufa_id)
-    if estufa_index is not None:
-        deleteEstufa = db.pop(estufa_index)
-        return deleteEstufa
-    raise NotFoundExceptionModel
+
+    try:
+        cur.execute("SELECT id FROM ESTUFAS WHERE id = " + str(estufa_id))
+        count = 0
+        for (id) in cur:
+            count += 1
+        if count == 0:
+            raise NotFoundExceptionModel
+        cur.execute("DELETE FROM ESTUFAS WHERE id = " + str(estufa_id))
+        return estufa_id
+    except:
+        raise NotFoundExceptionModel

@@ -48,6 +48,6 @@ async def update_estufa(atualizarEstufa: AtualizarEstufaModel):
 async def deleteEstufa(estufa_id: int):
     try:
         deletedEstufa = delete_estufa(estufa_id)
-        return {"message": f"Estufa com ID {deletedEstufa.id} excluída com sucesso"}
+        return {"message": f"Estufa com ID {deletedEstufa} excluída com sucesso"}
     except NotFoundExceptionModel:
         return JSONResponse(status_code=404, content=ExceptionModel(codigo='estufaNaoEncontrada', menssagem='Estufa não encontrada.').to_dict())
