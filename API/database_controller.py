@@ -12,11 +12,11 @@ cur: mariadb.Cursor
 
 try:
     conn = mariadb.connect(
-        user="183929",
-        password="183929",
-        host="177.67.253.69",
-        port=53306,
-        database="183929"
+        user="",
+        password="",
+        host="",
+        port=0,
+        database=""
     )
     cur = conn.cursor()
 except mariadb.Error as e:

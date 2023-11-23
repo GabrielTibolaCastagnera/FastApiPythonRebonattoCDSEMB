@@ -1,9 +1,6 @@
 /*
 Engenharia de Computação - UPF
 Comunicação de dados em Aplicações Embarcadas
-Gabriel Tibola Castagnera e Adrian Luithardt Klitzke
-29/10/2023
-Trabalho API REST em Python com chamadas na ESP32
 */
 
 #include <WiFi.h>
@@ -12,16 +9,16 @@ Trabalho API REST em Python com chamadas na ESP32
 
 #define DELAY_BETWEEN 2000
 #define DELAY_BETWEEN_CYCLES 10000
-#define PINO 34
+#define PINO 35
 
-const char *ssid = "Vanini";
-const char *passwd = "Capital_das_olarias";
+const char *ssid = "iPhone de Lucas";
+const char *passwd = "lucaswifi";
 
 unsigned long lastTime = 0;
 
 // Your Domain name with URL path or IP address with path
 // Inserção do URI (URL + URN) a acessar
-String uri = "http://192.168.0.5:8000/";
+String uri = "http://172.20.10.5:8000/";
 
 void acessaGET(String URN);
 void acessaPOST(String URN, String body);
@@ -176,6 +173,16 @@ void testarPut()
     doc["humidadeDoAr"] = 0.6;
     doc["luminosidade"] = analogRead(PINO);
     doc["humidadeDoSolo"] = 0.9;
+    serializeJson(doc, serializedDoc);
+    acessaPUT("atualizarEstufa", serializedDoc);
+    doc["id"] = 171;
+    doc["luminosidade"] = analogRead(PINO);
+    serializedDoc = "";
+    serializeJson(doc, serializedDoc);
+    acessaPUT("atualizarEstufa", serializedDoc);
+    doc["id"] = 5;
+    doc["luminosidade"] = analogRead(PINO);
+    serializedDoc = "";
     serializeJson(doc, serializedDoc);
     acessaPUT("atualizarEstufa", serializedDoc);
     delay(DELAY_BETWEEN);
