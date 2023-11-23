@@ -12,15 +12,16 @@ Trabalho API REST em Python com chamadas na ESP32
 
 #define DELAY_BETWEEN 2000
 #define DELAY_BETWEEN_CYCLES 10000
+#define PINO 34
 
-const char *ssid = "";
-const char *passwd = "";
+const char *ssid = "Vanini";
+const char *passwd = "Capital_das_olarias";
 
 unsigned long lastTime = 0;
 
 // Your Domain name with URL path or IP address with path
 // Inserção do URI (URL + URN) a acessar
-String uri = "http://192.168.2.108:8000/";
+String uri = "http://192.168.0.5:8000/";
 
 void acessaGET(String URN);
 void acessaPOST(String URN, String body);
@@ -53,6 +54,7 @@ void setup()
     Serial.println("");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
+    pinMode(GPIO_NUM_25, INPUT);
 }
 
 void loop()
@@ -75,6 +77,8 @@ void testarMetodos()
 {
     // insere 3 Dados Novos
     testarPost();
+    Serial.print("LUZ: ");
+    Serial.println(analogRead(34));
     // consulta o segundo dado inserido
     acessaGET("consultarEstufa?id=1");
     delay(DELAY_BETWEEN);
@@ -103,17 +107,19 @@ void testarPost()
     doc["humidadeDoAr"] = 0.9;
     doc["humidadeDoSolo"] = 0.8;
     doc["qtdDeMudas"] = 130;
-    doc["luminosidade"] = 200;
+    doc["luminosidade"] = analogRead(PINO);
     serializeJson(doc, serializedDoc);
     acessaPOST("criarNovaEstufa", serializedDoc);
     delay(DELAY_BETWEEN);
     doc["id"] = 1;
+    doc["luminosidade"] = analogRead(PINO);
     doc["nome"] = "Estufa 2";
     serializedDoc = "";
     serializeJson(doc, serializedDoc);
     acessaPOST("criarNovaEstufa", serializedDoc);
     delay(DELAY_BETWEEN);
     doc["id"] = 2;
+    doc["luminosidade"] = analogRead(PINO);
     doc["nome"] = "Estufa 3";
     serializedDoc = "";
     serializeJson(doc, serializedDoc);
@@ -168,6 +174,7 @@ void testarPut()
     doc["id"] = 1;
     doc["nome"] = "estufa atualizada";
     doc["humidadeDoAr"] = 0.6;
+    doc["luminosidade"] = analogRead(PINO);
     doc["humidadeDoSolo"] = 0.9;
     serializeJson(doc, serializedDoc);
     acessaPUT("atualizarEstufa", serializedDoc);

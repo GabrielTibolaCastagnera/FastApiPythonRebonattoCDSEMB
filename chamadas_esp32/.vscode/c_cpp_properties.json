@@ -8,12 +8,12 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/RestRotasMetodos/include",
-                "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/RestRotasMetodos/src",
+                "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/chamadas_esp32/include",
+                "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/chamadas_esp32/src",
                 "/home/oem/.platformio/packages/framework-arduinoespressif32/libraries/HTTPClient/src",
                 "/home/oem/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/home/oem/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
-                "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/RestRotasMetodos/.pio/libdeps/esp32dev/ArduinoJson/src",
+                "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/chamadas_esp32/.pio/libdeps/esp32dev/ArduinoJson/src",
                 "/home/oem/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                 "/home/oem/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                 "/home/oem/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
@@ -241,12 +241,12 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/RestRotasMetodos/include",
-                    "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/RestRotasMetodos/src",
+                    "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/chamadas_esp32/include",
+                    "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/chamadas_esp32/src",
                     "/home/oem/.platformio/packages/framework-arduinoespressif32/libraries/HTTPClient/src",
                     "/home/oem/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                     "/home/oem/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
-                    "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/RestRotasMetodos/.pio/libdeps/esp32dev/ArduinoJson/src",
+                    "/home/oem/Documentos/Trabalho Rebonatto/FastApiPythonRebonattoCDSEMB/chamadas_esp32/.pio/libdeps/esp32dev/ArduinoJson/src",
                     "/home/oem/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
                     "/home/oem/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include",
                     "/home/oem/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/freertos/include/esp_additions/freertos",
