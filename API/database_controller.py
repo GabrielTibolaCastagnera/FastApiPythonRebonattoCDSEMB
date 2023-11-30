@@ -1,87 +1,82 @@
-from multiprocessing import get_all_start_methods
-from pkgutil import get_data
 from estufa_model import EstufaModel
-from possue_id_igual import possueIdIgual
 from exception_model import EqualIdExceptionModel, NotFoundExceptionModel
 from atualizar_estufa_model import AtualizarEstufaModel
-from indexOf import indexOf
-import mariadb
 import sys
+from pymongo import MongoClient
 
-cur: mariadb.Cursor
+# Informações de conexão
+host = ''
+porta = ''
+usuario = ''
+senha = ''
+banco_de_dados = ''
+
+# Criando a string de conexão
+string_conexao = "mongodb://:@:/"
+
+
 
 try:
-    conn = mariadb.connect(
-        user="",
-        password="",
-        host="",
-        port=0,
-        database=""
-    )
-    cur = conn.cursor()
-except mariadb.Error as e:
-    print(f"Error conecting to MariaDB Platform: {e}")
-    sys.exit(1)
 
+    # Conectando ao MongoDB
+    cliente = MongoClient(string_conexao)
+
+    # Selecionando o banco de dados
+    db = cliente[banco_de_dados]
+    estufas = db['estufas']
+except Exception as e:
+    print(e)
+    sys.exit(1)
 
 def criarNovaEstufa(novaEstufa: EstufaModel):
     try:
-        cur.execute(
-            f"INSERT INTO `ESTUFAS`(`id`, `nome`, `humidadeDoAr`, `humidadeDoSolo`, `qtdDeMudas`, `luminosidade`) VALUES ({str(novaEstufa.id)}, '{str(novaEstufa.nome)}', {str(novaEstufa.humidadeDoAr)}, {str(novaEstufa.humidadeDoSolo)}, {str(novaEstufa.qtdDeMudas)}, {str(novaEstufa.luminosidade)})")
-        conn.commit()
-    except mariadb.Error as e:
-        print(e)
+        print(db.list_collection_names())
+        exists = estufas.find_one({'id': novaEstufa.id})
+        if(exists == None):
+           estufas.insert_one(novaEstufa.dict())
+        else:
+            raise EqualIdExceptionModel
+    except Exception as e:
         raise EqualIdExceptionModel
 
 def updateStove(stove: AtualizarEstufaModel):
     try:
-        cur.execute("SELECT id FROM ESTUFAS WHERE id = " + str(stove.id))
-        count = 0
-        for (id) in cur:
-            count += 1
-        if count == 0:
-            raise NotFoundExceptionModel
-        hasUpdate = False
-        update = "UPDATE ESTUFAS SET "
-        if not (stove.humidadeDoAr is None):
-            hasUpdate = True
-            update += "humidadeDoAr = " + str(stove.humidadeDoAr) + ", "
-        if not (stove.humidadeDoSolo is None):
-            hasUpdate = True
-            update += "humidadeDoSolo = " + str(stove.humidadeDoSolo) + ", "
-        if not (stove.luminosidade is None):
-            hasUpdate = True
-            update += "luminosidade = " + str(stove.luminosidade) + ", "
-        if not (stove.nome is None):
-            hasUpdate = True
-            update += "nome = '" + stove.nome + "', "
-        if not (stove.qtdDeMudas is None):
-            hasUpdate = True
-            update += "qtdDeMudas = " + str(stove.qtdDeMudas) + ", "
-        if (hasUpdate):
-            update = update[:-1]
-            update = update[:-1]
-            update += " WHERE id = " + str(stove.id)
-            print(update)
-            cur.execute(update)
+        exists = estufas.find_one({'id': stove.id})
+        print(exists)
+        if(exists != None):
+            update = {}
+            if(stove.nome):
+                update['nome'] = stove.nome
+            if(stove.humidadeDoAr):
+                update['humidadeDoAr'] = stove.humidadeDoAr
+            if(stove.humidadeDoSolo):
+                update['humidadeDoSolo'] = stove.humidadeDoSolo
+            if(stove.qtdDeMudas):
+                update['qtdDeMudas'] = stove.qtdDeMudas
+            if(stove.luminosidade):
+                update['luminosidade'] = stove.luminosidade
+
+            estufas.update_one({'id': stove.id}, {'$set': update})
         else:
             raise NotFoundExceptionModel
 
-    except mariadb.Error as e:
+    except Exception as e:
         print(e)
         raise NotFoundExceptionModel
     
 
 
 def search_list(id: None | int):
+    result = {}
     if id is None:
-        cur.execute("SELECT * FROM ESTUFAS")
+        result = estufas.find()
     else:
-        cur.execute("SELECT * FROM ESTUFAS WHERE id = " + str(id))
+        result = estufas.find({'id': id})
     list = []
-    for (id, nome, hum, humS, mudas, lum) in cur:
-        list.append(EstufaModel(humidadeDoAr=hum, humidadeDoSolo=humS,
-                    id=id, luminosidade=lum, nome=nome, qtdDeMudas=mudas))
+    for res in result:
+        
+        list.append(EstufaModel(humidadeDoAr=res['humidadeDoAr'], humidadeDoSolo=res['humidadeDoSolo'],
+                    id=res['id'], luminosidade=res['luminosidade'], nome=res['nome'], qtdDeMudas=res['qtdDeMudas']))
     if (len(list) == 0):
         raise NotFoundExceptionModel
     return list
@@ -90,13 +85,11 @@ def search_list(id: None | int):
 def delete_estufa(estufa_id: int):
 
     try:
-        cur.execute("SELECT id FROM ESTUFAS WHERE id = " + str(estufa_id))
-        count = 0
-        for (id) in cur:
-            count += 1
-        if count == 0:
+        result = estufas.find_one({'id': estufa_id})
+        print(result)
+        if result == None:
             raise NotFoundExceptionModel
-        cur.execute("DELETE FROM ESTUFAS WHERE id = " + str(estufa_id))
+        estufas.delete_one({'id': estufa_id})
         return estufa_id
     except:
         raise NotFoundExceptionModel
